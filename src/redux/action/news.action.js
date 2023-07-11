@@ -1,4 +1,4 @@
-import { ADD_ITEM, DELETE_ITEM } from "../action/news.action-types";
+import { ADD_ITEM, DELETE_ITEM } from "../action-type/news.action-types";
 
 const addItem = () => {
   return {

@@ -93,8 +93,33 @@ server.post('/auth/login', (req, res) => {
     res.status(200).json({ access_token })
 })
 
+server.use(/^\/(.*)/, (req, res, next) => {
+    if (req.headers.authorization === undefined || req.headers.authorization.split(' ')[0] !== 'Bearer') {
+        const status = 401
+        const message = 'Error in authorization format'
+        res.status(status).json({ status, message })
+        return
+    }
+    try {
+        let verifyTokenResult;
+        verifyTokenResult = verifyToken(req.headers.authorization.split(' ')[1]);
+
+        if (verifyTokenResult instanceof Error) {
+            const status = 401;
+            const message = 'Invalid Access token';
+            res.status(status).json({ status, message });
+            return;
+        }
+        next()
+    } catch (err) {
+        const status = 401;
+        const message = 'Error access_token is revoked';
+        res.status(status).json({ status, message });
+    }
+})
+
 // Get World news
-server.get('/ny-news/world', (req, res) => {
+server.get('/ny-news/world', (req, res, next) => {
     axios.get(`${BASE_URL}/topstories/v2/world.json?api-key=${API_TOKEN}`).then((resp) => {
         res.status(200).json(resp.data);
     }).catch((err) => {
@@ -113,7 +138,10 @@ server.get('/ny-news/science', (req, res) => {
 
 // Get Searched Articles
 server.get('/ny-news/article/search', (req, res) => {
-    axios.get(`${BASE_URL}/search/v2/articlesearch.json?q=new+york+times&page=0&api-key==${API_TOKEN}`).then((resp) => {
+    const query = req.query.search.replace(/ /g,"+");(' ', '+');
+    const page = req.query.page;
+
+    axios.get(`${BASE_URL}/search/v2/articlesearch.json?q=${query}&page=${page}&api-key=${API_TOKEN}`).then((resp) => {
         res.status(200).json(resp.data);
     }).catch((err) => {
         console.error(err);
@@ -121,6 +149,7 @@ server.get('/ny-news/article/search', (req, res) => {
 })
 
 server.use(/^(?!\/auth).*$/, (req, res, next) => {
+    console.log("#@@@@@@@@@@@@@@@@");
     if (req.headers.authorization === undefined || req.headers.authorization.split(' ')[0] !== 'Bearer') {
         const status = 401
         const message = 'Error in authorization format'
