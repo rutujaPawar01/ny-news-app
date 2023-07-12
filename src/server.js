@@ -1,4 +1,7 @@
-const fs = require('fs')
+const fs = require('fs');
+const dotenv = require('dotenv');
+dotenv.config();
+
 const bodyParser = require('body-parser')
 const jsonServer = require('json-server')
 const jwt = require('jsonwebtoken')
@@ -12,9 +15,10 @@ server.use(bodyParser.urlencoded({ extended: true }))
 server.use(bodyParser.json())
 server.use(jsonServer.defaults());
 
-const BASE_URL = 'https://api.nytimes.com/svc';
-const SECRET_KEY = 'HiNpXVFTfado70fq';
-const API_TOKEN = 'boRMofQXn9PIYM9OGrqRWzndZAl6NzKV';
+const BASE_URL = process.env.BASE_URL;
+const SECRET_KEY = process.env.SECRET_KEY;
+const API_TOKEN = process.env.API_TOKEN;
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
 const expiresIn = '15m'
 
@@ -90,8 +94,50 @@ server.post('/auth/login', (req, res) => {
     }
     const access_token = createToken({ email, password })
     console.log("Access Token:" + access_token);
+
+    const refreshToken = jwt.sign({
+        email,
+    }, REFRESH_TOKEN_SECRET, { expiresIn });
+
+    // Assigning refresh token in http-only cookie 
+    res.cookie('jwt', refreshToken, {
+        httpOnly: true,
+        sameSite: 'None', secure: true,
+        maxAge: 24 * 60 * 60 * 1000
+    });
+
     res.status(200).json({ access_token })
-})
+});
+
+app.post('/auth/refresh', (req, res) => {
+    if (req.cookies?.jwt) {
+
+        // Destructuring refreshToken from cookie
+        const refreshToken = req.cookies.jwt;
+        const { email } = req.body;
+
+        // Verifying refresh token
+        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET,
+            (err, decoded) => {
+                if (err) {
+
+                    // Wrong Refesh Token
+                    return res.status(406).json({ message: 'Unauthorized' });
+                }
+                else {
+                    // Correct token we send a new access token
+                    const accessToken = jwt.sign({
+                        email
+                    }, process.env.ACCESS_TOKEN_SECRET, {
+                        expiresIn: '10m'
+                    });
+                    return res.json({ accessToken });
+                }
+            })
+    } else {
+        return res.status(406).json({ message: 'Unauthorized' });
+    }
+});
 
 server.use(/^\/(.*)/, (req, res, next) => {
     if (req.headers.authorization === undefined || req.headers.authorization.split(' ')[0] !== 'Bearer') {
@@ -138,7 +184,7 @@ server.get('/ny-news/science', (req, res) => {
 
 // Get Searched Articles
 server.get('/ny-news/article/search', (req, res) => {
-    const query = req.query.search.replace(/ /g,"+");(' ', '+');
+    const query = req.query.search.replace(/ /g, "+"); (' ', '+');
     const page = req.query.page;
 
     axios.get(`${BASE_URL}/search/v2/articlesearch.json?q=${query}&page=${page}&api-key=${API_TOKEN}`).then((resp) => {
