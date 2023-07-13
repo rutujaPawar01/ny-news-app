@@ -1,0 +1,2 @@
+export const SEARCH_NEWS = "SEARCH_NEWS";
+export const SET_SEARCH_NEWS = "SET_SEARCH_NEWS";

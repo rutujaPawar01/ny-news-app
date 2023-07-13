@@ -30,7 +30,6 @@ import {
         return {
           ...state,
           isLoggedIn: true,
-          user: payload.user,
         };
       case LOGIN_FAIL:
         return {

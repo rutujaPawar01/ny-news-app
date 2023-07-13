@@ -18,7 +18,7 @@ export const register = (username, email, password) => (dispatch) => {
 
       dispatch({
         type: SET_MESSAGE,
-        payload: response.data.message,
+        payload: 'User registered successfully! Please login to the app',
       });
 
       return Promise.resolve();
@@ -50,7 +50,6 @@ export const login = (username, password) => (dispatch) => {
     (data) => {
       dispatch({
         type: LOGIN_SUCCESS,
-        payload: { user: data },
       });
 
       return Promise.resolve();
@@ -84,3 +83,10 @@ export const logout = () => (dispatch) => {
     type: LOGOUT,
   });
 };
+
+export const setLoggedIn = () => (dispatch) => {
+  dispatch({
+    type: LOGIN_SUCCESS,
+  });
+};
+

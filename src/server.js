@@ -29,18 +29,20 @@ function createToken(payload) {
 
 // Verify the token 
 function verifyToken(token) {
+    // console.log("### verifyToken", token);
     return jwt.verify(token, SECRET_KEY, (err, decode) => decode !== undefined ? decode : err)
 }
 
 // Check if the user exists in database
 function isAuthenticated({ email, password }) {
-    return userdb.users.findIndex(user => user.email === email && user.password === password) !== -1
+    // console.log("#### isAuthenticated", userdb?.users, userdb?.users?.findIndex(user => user.email === email && user.password === password) !== -1)
+    return userdb?.users?.findIndex(user => user.email === email && user.password === password) !== -1
 }
 
 // Register New User
 server.post('/auth/register', (req, res) => {
     console.log("register endpoint called; request body:");
-    console.log(req.body);
+    // console.log(req.body);
     const { email, password } = req.body;
 
     if (isAuthenticated({ email, password }) === true) {
@@ -84,16 +86,20 @@ server.post('/auth/register', (req, res) => {
 // Login to one of the users from ./users.json
 server.post('/auth/login', (req, res) => {
     console.log("login endpoint called; request body:");
-    console.log(req.body);
     const { email, password } = req.body;
+    // console.log("#### req.body", req.body);
+
     if (isAuthenticated({ email, password }) === false) {
         const status = 401
         const message = 'Incorrect email or password'
         res.status(status).json({ status, message })
         return
     }
+
+    // console.log("#### email", email, password);
+
     const access_token = createToken({ email, password })
-    console.log("Access Token:" + access_token);
+    // console.log("Access Token:" + access_token);
 
     const refreshToken = jwt.sign({
         email,
@@ -109,7 +115,7 @@ server.post('/auth/login', (req, res) => {
     res.status(200).json({ access_token })
 });
 
-app.post('/auth/refresh', (req, res) => {
+server.post('/auth/refresh', (req, res) => {
     if (req.cookies?.jwt) {
 
         // Destructuring refreshToken from cookie
@@ -140,6 +146,7 @@ app.post('/auth/refresh', (req, res) => {
 });
 
 server.use(/^\/(.*)/, (req, res, next) => {
+    // console.log("### req", req);
     if (req.headers.authorization === undefined || req.headers.authorization.split(' ')[0] !== 'Bearer') {
         const status = 401
         const message = 'Error in authorization format'
@@ -166,6 +173,7 @@ server.use(/^\/(.*)/, (req, res, next) => {
 
 // Get World news
 server.get('/ny-news/world', (req, res, next) => {
+    // console.log("### in api req", req);
     axios.get(`${BASE_URL}/topstories/v2/world.json?api-key=${API_TOKEN}`).then((resp) => {
         res.status(200).json(resp.data);
     }).catch((err) => {
@@ -184,10 +192,28 @@ server.get('/ny-news/science', (req, res) => {
 
 // Get Searched Articles
 server.get('/ny-news/article/search', (req, res) => {
-    const query = req.query.search.replace(/ /g, "+"); (' ', '+');
-    const page = req.query.page;
+    const query = req.query?.search?.replace(/ /g, "+"); (' ', '+');
+    const page = req.query?.page;
+    const fq = req.query?.fq;
+    // console.log("### fq", req.query?.fq);
 
-    axios.get(`${BASE_URL}/search/v2/articlesearch.json?q=${query}&page=${page}&api-key=${API_TOKEN}`).then((resp) => {
+    let queryParam = '';
+
+    if (query) {
+        queryParam += `&q=${query}`;
+    }
+    if (page) {
+        queryParam += `&page=${page}`;
+    }
+    if (fq) {
+        queryParam += `&fq=${fq}`;
+    }
+
+    const newQuery = queryParam.replace('&', '?');
+    // console.log("#### newQuery", newQuery);
+    // 'q=${query}&page=${page}&api-key=${API_TOKEN'
+
+    axios.get(`${BASE_URL}/search/v2/articlesearch.json${newQuery}&api-key=${API_TOKEN}`).then((resp) => {
         res.status(200).json(resp.data);
     }).catch((err) => {
         console.error(err);
@@ -195,7 +221,6 @@ server.get('/ny-news/article/search', (req, res) => {
 })
 
 server.use(/^(?!\/auth).*$/, (req, res, next) => {
-    console.log("#@@@@@@@@@@@@@@@@");
     if (req.headers.authorization === undefined || req.headers.authorization.split(' ')[0] !== 'Bearer') {
         const status = 401
         const message = 'Error in authorization format'

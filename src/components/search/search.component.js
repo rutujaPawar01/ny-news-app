@@ -19,85 +19,36 @@ import newsService from "../../services/news.service";
 const News = () => {
   const news = [];
   const [query, setQuery] = useState('');
-  const [newData, setNewData] = useState([]);
-  const [queryArray, setQueryArray] = useState([]);
-  const [selectedTab, setTab] = useState(0);
   const [newsData, setNewsList] = useState([]);
 
   const dispatch = useDispatch();
-  const { worldNews, scienceNews } = useSelector(state => state.news);
+  const { searchedNews } = useSelector(state => state.news);
 
   useEffect(() => {
-    if (selectedTab === 0) {
-      dispatch(getWorldNews());
-    } else {
-      dispatch(getScienceNews());
-    }
-    setNewsList([]);
+    dispatch(getWorldNews());
+    // setNewsList([]);
   }, [selectedTab]);
 
   useEffect(() => {
-    if (selectedTab === 0) {
-      setNewsList(worldNews);
-    } else {
-      setNewsList(scienceNews);
-    }
-  }, [worldNews, scienceNews]);
+    setNewsList(searchedNews);
+  }, [searchedNews]);
 
-  function searchNews() {
-    setQueryArray(query?.toLowerCase().match(/\S+/g));
-
-    let newArray = [];
-
-    if (queryArray !== undefined) {
-      queryArray.forEach((element) => {
-        news?.forEach((item) => {
-          if (
-            element.includes(" ") === false &&
-            item.title.toLowerCase().includes(element) &&
-            newArray.indexOf(item) === -1
-          ) {
-            newArray.push(item);
-          }
-        });
-      });
-    }
-
-    if (queryArray !== undefined) {
-      queryArray.forEach((element) => {
-        news?.forEach((item) => {
-          if (
-            element.includes(" ") === false &&
-            item.summary.toLowerCase().includes(element) &&
-            newArray.indexOf(item) === -1
-          ) {
-            newArray.push(item);
-          }
-        });
-      });
-    }
-    setNewData(newArray);
+  function searchNews(event) {
+    //event.target.value
   }
-
-  const handleChange = (event, newValue) => {
-    setTab(newValue);
-  };
 
   return (
     <>
       <Container sx={{ padding: { xs: '2rem', md: '2rem' } }}>
         <Box>
           <Typography variant="subtitle1" sx={{ fontWeight: "600" }}>
-            Filter by keywords
+            Search news here
           </Typography>
 
           <TextField
             type="search"
             placeholder="I'm searching for..."
-            onChange={(e) => {
-              setQuery(e.target.value);
-              searchNews();
-            }}
+            onChange={searchNews}
             variant="outlined"
             sx={{
               my: "1rem",
@@ -120,14 +71,9 @@ const News = () => {
 
         <Typography variant="subtitle1" sx={{ fontWeight: "600" }}>
           Results:{" "}
-          {query === '' ? news?.length : newData.length}
+          {query === '' ? newsData?.length : newData.length}
         </Typography>
 
-
-        <Tabs value={selectedTab} onChange={handleChange} centered>
-          <Tab label="World" />
-          <Tab label="Science" />
-        </Tabs>
         <Grid container spacing={3} my={1}>
           {newsData?.results?.length > 0 ?
             newsData?.results?.map((news, key) => {

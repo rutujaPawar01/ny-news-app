@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Routes, Route, Link, useLocation } from "react-router-dom";
+import { Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
 
 // import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -14,17 +14,20 @@ import News from "./components/news/news.component";
 // import BoardModerator from "./components/BoardModerator";
 // import BoardAdmin from "./components/BoardAdmin";
 
-import { logout } from "./redux/action/auth.action";
+import { logout, setLoggedIn } from "./redux/action/auth.action";
 import { clearMessage } from "./redux/action/message.action";
+import { addTokenToLocalStorage, getTokenFromLocalStorage, refreshToken } from "./services/auth.service";
+import ArticleDetail from "./components/news-detail/articleDetail.component";
 
 const App = () => {
   const [showModeratorBoard, setShowModeratorBoard] = useState(false);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
+  const { isLoggedIn } = useSelector(state => state.auth);
 
-  const { user: currentUser } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   let location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (["/login", "/register"].includes(location.pathname)) {
@@ -32,65 +35,36 @@ const App = () => {
     }
   }, [dispatch, location]);
 
+  useEffect(() => {
+    const token = getTokenFromLocalStorage();
+    if (token?.length > 0) {
+      dispatch(setLoggedIn());
+    } else {
+      dispatch(logout());
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isLoggedIn && "/register" !== location.pathname) navigate('/login');
+  }, [isLoggedIn]);
+
   const logOut = useCallback(() => {
     dispatch(logout());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (currentUser) {
-      setShowModeratorBoard(currentUser.roles.includes("ROLE_MODERATOR"));
-      setShowAdminBoard(currentUser.roles.includes("ROLE_ADMIN"));
-    } else {
-      setShowModeratorBoard(false);
-      setShowAdminBoard(false);
-    }
-  }, [currentUser]);
-
   return (
     <div>
       <nav className="navbar navbar-expand navbar-dark bg-dark">
-        <Link to={"/"} className="navbar-brand">
-          bezKoder
-        </Link>
         <div className="navbar-nav mr-auto">
           <li className="nav-item">
-            <Link to={"/home"} className="nav-link">
+            <Link to={"/news"} className="nav-link">
               Home
             </Link>
           </li>
-
-          {showModeratorBoard && (
-            <li className="nav-item">
-              <Link to={"/mod"} className="nav-link">
-                Moderator Board
-              </Link>
-            </li>
-          )}
-
-          {showAdminBoard && (
-            <li className="nav-item">
-              <Link to={"/admin"} className="nav-link">
-                Admin Board
-              </Link>
-            </li>
-          )}
-
-          {currentUser && (
-            <li className="nav-item">
-              <Link to={"/user"} className="nav-link">
-                User
-              </Link>
-            </li>
-          )}
         </div>
 
-        {currentUser ? (
+        {isLoggedIn ? (
           <div className="navbar-nav ml-auto">
-            <li className="nav-item">
-              <Link to={"/profile"} className="nav-link">
-                {currentUser.username}
-              </Link>
-            </li>
             <li className="nav-item">
               <a href="/login" className="nav-link" onClick={logOut}>
                 LogOut
@@ -117,9 +91,10 @@ const App = () => {
       <div className="container mt-3">
         <Routes>
           <Route path="/" element={<News />} />
-          {/* <Route path="/home" element={<Home />} /> */}
+          <Route path="/news" element={<News />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/article" element={<ArticleDetail />} />
           {/* <Route path="/profile" element={<Profile />} /> */}
           {/* <Route path="/user" element={<BoardUser />} /> */}
           {/* <Route path="/mod" element={<BoardModerator />} /> */}
