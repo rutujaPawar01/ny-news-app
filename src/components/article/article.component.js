@@ -57,7 +57,6 @@ export const Article = ({
         </CardContent>
 
         <CardActions>
-          {/* <Link to={{ pathname: '/article', state: { test: 1, webUrl: url } }} > */}
           <Link to="/article" state={{ webUrl: url }} >
             <Button
               variant="text"

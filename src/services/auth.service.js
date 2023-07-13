@@ -32,7 +32,7 @@ const login = (email, password) => {
         .post(API_URL + "/login", {
             email,
             password,
-        })
+        }, { withCredentials: true })
         .then((response) => {
             if (response.data.access_token) {
                 addTokenToLocalStorage(response.data.access_token || '');
@@ -50,12 +50,12 @@ const logout = () => {
 export const refreshToken = async () => {
     try {
         const email = getEmailFromLocalStorage();
-        const resp = axiosInstance.post(API_URL + "/refresh", {
+        const resp = await axiosInstance.post(API_URL + "/refresh", {
             email,
-        });
-        console.log("refresh token", resp.access_token);
-        if (resp?.access_token) addTokenToLocalStorage(resp.access_token);
-        return resp.access_token;
+        }, { withCredentials: true });
+        console.log("refresh token", resp.accessToken);
+        if (resp?.data?.accessToken) addTokenToLocalStorage(resp.data.accessToken);
+        return resp.data.accessToken;
     } catch (e) {
         console.log("Error", e);
     }

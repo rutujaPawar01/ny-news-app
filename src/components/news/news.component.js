@@ -86,44 +86,6 @@ const News = () => {
   return (
     <>
       <Container sx={{ padding: { xs: '2rem', md: '2rem' } }}>
-        <Box>
-          <Typography variant="subtitle1" sx={{ fontWeight: "600" }}>
-            Filter by keywords
-          </Typography>
-
-          <TextField
-            type="search"
-            placeholder="I'm searching for..."
-            onChange={(e) => {
-              setQuery(e.target.value);
-              searchNews();
-            }}
-            variant="outlined"
-            sx={{
-              my: "1rem",
-              maxWidth: "30rem",
-            }}
-            fullWidth
-            size="small"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box>
-
-        {/* {loading && <Loading />} */}
-        {/* {error && <Error error={error} />} */}
-
-        <Typography variant="subtitle1" sx={{ fontWeight: "600" }}>
-          Results:{" "}
-          {query === '' ? news?.length : newData.length}
-        </Typography>
-
-
         <Tabs value={selectedTab} onChange={handleChange} centered>
           <Tab label="World" />
           <Tab label="Science" />

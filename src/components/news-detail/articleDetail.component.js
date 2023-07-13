@@ -1,31 +1,23 @@
+import * as React from 'react';
 import { useLocation } from 'react-router-dom';
-import { Button, Box, Typography, Link } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import {  Box, Typography, Link } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { getNewsDetail } from "../../redux/action/news.action";
 import { useEffect } from 'react';
 
 const BASE_URL = 'https://www.nytimes.com/';
+
 const ArticleDetail = () => {
   const location = useLocation();
-  // const { webUrl } = state;
   const dispatch = useDispatch();
-
   const articleData = useSelector((state) => state.news.article)
-
 
   useEffect(() => {
     dispatch(getNewsDetail(location?.state?.webUrl));
   }, [location]);
 
-  useEffect(() => {
-    console.log("articleData", articleData)
-  }, [articleData]);
-
   return (
     <>
-      {/* {loading && <Loading />}
-      {error && <Error error={error} />} */}
       {articleData && Object.keys(articleData)?.length > 0 && <>
         <Box
           component="img"
@@ -65,15 +57,6 @@ const ArticleDetail = () => {
               {articleData?.web_url}
             </Link>
           </Typography>
-
-          {/* <Button
-          onClick={() => navigate("/")}
-          startIcon={<ArrowBackIcon />}
-          sx={{ marginTop: "3rem" }}
-        >
-          Back to homepage
-        </Button> */}
-
         </Box>
       </>
       }

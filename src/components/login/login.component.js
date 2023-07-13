@@ -3,68 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from 'react-router-dom';
 
 import { login } from "../../redux/action/auth.action";
-
-// const Login = (props) => {
-//   let navigate = useNavigate();
-
-//   const form = useRef();
-//   const checkBtn = useRef();
-
-//   const [username, setUsername] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [loading, setLoading] = useState(false);
-
-//   const { isLoggedIn } = useSelector(state => state.auth);
-//   const { message } = useSelector(state => state.message);
-
-//   const dispatch = useDispatch();
-
-//   const onChangeUsername = (e) => {
-//     const username = e.target.value;
-//     setUsername(username);
-//   };
-
-//   const onChangePassword = (e) => {
-//     const password = e.target.value;
-//     setPassword(password);
-//   };
-
-//   const handleLogin = (e) => {
-//     e.preventDefault();
-
-//     setLoading(true);
-
-//     // form.current.validateAll();
-
-//     // if (checkBtn.current.context._errors.length === 0) {
-//     dispatch(login(username, password))
-//       .then(() => {
-//         navigate("/news");
-//         window.location.reload();
-//       })
-//       .catch(() => {
-//         setLoading(false);
-//       });
-//     // } else {
-//     //   setLoading(false);
-//     // }
-//   };
-
-//   if (isLoggedIn) {
-//     return <Navigate to="/news" />;
-//   }
-
-//   return <div className="col-md-12">
-//     <div className="card card-container">
-//       <input />
-
-//     </div>
-//   </div>
-// };
-
-// export default Login;
-
-// import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -101,20 +39,6 @@ export default function Login() {
   const onChangePassword = (e) => {
     const password = e.target.value;
     setPassword(password);
-  };
-
-  const handleLogin = (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    dispatch(login(username, password))
-      .then(() => {
-        navigate("/news");
-        window.location.reload();
-      })
-      .catch(() => {
-        setLoading(false);
-      });
   };
 
   if (isLoggedIn) {

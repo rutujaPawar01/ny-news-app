@@ -1,2 +1,3 @@
 export const SEARCH_NEWS = "SEARCH_NEWS";
 export const SET_SEARCH_NEWS = "SET_SEARCH_NEWS";
+export const COUNT_SEARCH_NEWS = "COUNT_SEARCH_NEWS";

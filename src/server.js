@@ -1,6 +1,7 @@
-const fs = require('fs');
 const dotenv = require('dotenv');
 dotenv.config();
+
+const fs = require('fs');
 
 const bodyParser = require('body-parser')
 const jsonServer = require('json-server')
@@ -105,28 +106,30 @@ server.post('/auth/login', (req, res) => {
         email,
     }, REFRESH_TOKEN_SECRET, { expiresIn });
 
+    console.log("#### set cookie", refreshToken);
     // Assigning refresh token in http-only cookie 
     res.cookie('jwt', refreshToken, {
         httpOnly: true,
         sameSite: 'None', secure: true,
         maxAge: 24 * 60 * 60 * 1000
     });
+    console.log("#### res after set cookie", res);
 
     res.status(200).json({ access_token })
 });
 
 server.post('/auth/refresh', (req, res) => {
-    if (req.cookies?.jwt) {
+    const refreshToken = req?.headers?.cookie?.split('=')[1];
 
-        // Destructuring refreshToken from cookie
-        const refreshToken = req.cookies.jwt;
+    if (refreshToken) {
         const { email } = req.body;
 
+        console.log("#### refresh / Beofew / Verifying refresh token", REFRESH_TOKEN_SECRET, refreshToken);
         // Verifying refresh token
-        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET,
+        jwt.verify(refreshToken, "MYREFRESHTOKENSECRET",
             (err, decoded) => {
                 if (err) {
-
+                    console.log("#### refresh / Verifying refresh token", refreshToken, err);
                     // Wrong Refesh Token
                     return res.status(406).json({ message: 'Unauthorized' });
                 }
@@ -134,13 +137,17 @@ server.post('/auth/refresh', (req, res) => {
                     // Correct token we send a new access token
                     const accessToken = jwt.sign({
                         email
-                    }, process.env.ACCESS_TOKEN_SECRET, {
-                        expiresIn: '10m'
+                    }, SECRET_KEY, {
+                        expiresIn: '15m'
                     });
+                    
+                    console.log("#### refresh ELSE part", accessToken);
+                    
                     return res.json({ accessToken });
                 }
             })
     } else {
+        console.log("#### refresh out in catch");
         return res.status(406).json({ message: 'Unauthorized' });
     }
 });
