@@ -17,3 +17,19 @@ export const handleHistorySearch = (searchText) => {
     historySearch.push(searchText);
     setHistorySearched(historySearch);
 }
+
+export const getTokenFromLocalStorage = () => {
+    return localStorage.getItem("accessToken") || '';
+}
+
+export const addTokenToLocalStorage = (token) => {
+    localStorage.setItem("accessToken", token);
+}
+
+export const getEmailFromLocalStorage = () => {
+    return localStorage.getItem("Email") || '';
+}
+
+export const addEmailToLocalStorage = (email) => {
+    localStorage.setItem("Email", JSON.stringify(email));
+}

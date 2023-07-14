@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Routes, Route, Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
+import { Routes, Route, Link as RouterLink, useLocation } from "react-router-dom";
 import Link from "@material-ui/core/Link";
 
 import "./App.css";
@@ -11,20 +11,16 @@ import News from "./components/news/news.component";
 
 import { logout, setLoggedIn } from "./redux/action/auth.action";
 import { clearMessage } from "./redux/action/message.action";
-import { getTokenFromLocalStorage } from "./services/auth.service";
 import ArticleDetail from "./components/news-detail/articleDetail.component";
 import SearchNews from "./components/search/search.component";
-import { setHistorySearched } from "./utils/util";
+import { getTokenFromLocalStorage, setHistorySearched } from "./utils/util";
 
 const App = () => {
-  const [showModeratorBoard, setShowModeratorBoard] = useState(false);
-  const [showAdminBoard, setShowAdminBoard] = useState(false);
   const { isLoggedIn } = useSelector(state => state.auth);
 
   const dispatch = useDispatch();
 
   let location = useLocation();
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (["/login", "/register"].includes(location.pathname)) {
@@ -40,10 +36,6 @@ const App = () => {
       dispatch(logout());
     }
   }, []);
-
-  useEffect(() => {
-    // if (!isLoggedIn && "/register" !== location.pathname) navigate('/login');
-  }, [isLoggedIn]);
 
   const logOut = useCallback(() => {
     dispatch(logout());

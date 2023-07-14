@@ -50,7 +50,7 @@ const ArticleDetail = () => {
           <Typography variant="body1">{articleData?.snippet}</Typography>
           <Typography
             variant="subtitle1"
-            sx={{ marginTop: "1rem", fontWeight: "600" }}
+            sx={{ marginTop: "2rem", fontWeight: "600" }}
           >
             Learn more:{" "}
             <Link href={articleData?.web_url} underline="hover" color="inherit">

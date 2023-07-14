@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from 'react-router-dom';
 
@@ -7,8 +7,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -41,22 +39,19 @@ export default function Login() {
     setPassword(password);
   };
 
-  if (isLoggedIn) {
-    return <Navigate to="/news" />;
-  }
   const handleSubmit = (event) => {
     event.preventDefault();
-    setLoading(true);
 
     dispatch(login(username, password))
       .then(() => {
         navigate("/news");
         window.location.reload();
       })
-      .catch(() => {
-        setLoading(false);
-      });
   };
+
+  if (isLoggedIn) {
+    return <Navigate to="/news" />;
+  }
 
   return (
     <ThemeProvider theme={defaultTheme}>

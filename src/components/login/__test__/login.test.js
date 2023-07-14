@@ -2,25 +2,18 @@
 import * as React from 'react';
 import * as Redux from 'react-redux';
 
-import { fireEvent, getByText, render, screen, waitFor } from "@testing-library/react";
-import ArticleDetail from "../../news-detail/articleDetail.component.js";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { StyledEngineProvider } from "@mui/material";
 import store from "../../../redux/store/store.js";
 
 import { useSelector } from 'react-redux';
-import { mockData } from './article.mock.js';
 import Login from '../login.component.js';
 
-jest.mock('react-redux', () => ({
-    ...jest.requireActual('react-redux'),
-    useSelector: jest.fn()
-}));
 
 
 const loadComponent = () => {
-    jest.spyOn(Redux, 'useSelector').mockReturnValue(mockData);
 
     return render(
         <Provider store={store}>
@@ -45,7 +38,7 @@ describe("Login Component", function () {
 
     it("should display sign up link", async () => {
         loadComponent();
-        console.log(screen.debug())
+        
         expect(await screen.findByText("Don't have an account? Sign Up")).toBeVisible();
     });
 

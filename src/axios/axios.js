@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { addTokenToLocalStorage, getTokenFromLocalStorage, refreshToken } from '../services/auth.service';
+import { refreshToken } from '../services/auth.service';
+import { addTokenToLocalStorage, getTokenFromLocalStorage } from '../utils/util';
 
 export const axiosInstance = axios.create({
     withCredentials: true
@@ -38,4 +39,5 @@ axiosInstance.interceptors.request.use(
     },
     async function (error) {
         return Promise.reject(error);
-    });
+    }
+);

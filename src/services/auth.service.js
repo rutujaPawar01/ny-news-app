@@ -1,23 +1,6 @@
 import { axiosInstance } from "../axios/axios";
+import { addEmailToLocalStorage, addTokenToLocalStorage, getEmailFromLocalStorage } from "../utils/util";
 const API_URL = "http://localhost:8000/auth";
-
-//Move this to separate file
-
-export const getTokenFromLocalStorage = () => {
-    return localStorage.getItem("accessToken") || '';
-}
-
-export const addTokenToLocalStorage = (token) => {
-    localStorage.setItem("accessToken", token);
-}
-
-export const getEmailFromLocalStorage = () => {
-    return localStorage.getItem("Email") || '';
-}
-
-export const addEmailToLocalStorage = (email) => {
-    localStorage.setItem("Email", JSON.stringify(email));
-}
 
 const register = (username, email, password) => {
     return axiosInstance.post(API_URL + "/register", {
@@ -40,6 +23,8 @@ const login = (email, password) => {
             }
 
             return response.data;
+        }).catch((e) => {
+            console.log("Error", e);
         });
 };
 

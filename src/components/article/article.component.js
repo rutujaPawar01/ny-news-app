@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Typography,
   Card,
@@ -12,7 +13,6 @@ import EastIcon from "@mui/icons-material/East";
 import EventIcon from "@mui/icons-material/Event";
 
 export const Article = ({
-  index,
   imageUrl,
   publishedAt,
   title,

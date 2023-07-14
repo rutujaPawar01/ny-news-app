@@ -5,8 +5,6 @@ import {
   InputAdornment,
   Box,
   Typography,
-  Tabs,
-  Tab,
   Skeleton,
   Pagination,
   Autocomplete
@@ -17,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { searchNews } from "../../redux/action/search.action";
 import { Article } from '../article/article.component';
 import debounce from "lodash.debounce";
-import { getHistorySearched, handleHistorySearch, setHistorySearched } from "../../utils/util";
+import { getHistorySearched, handleHistorySearch } from "../../utils/util";
 
 const BASE_URL = "https://static01.nyt.com/";
 
@@ -92,11 +90,6 @@ const SearchNews = () => {
             )}
           />
         </Box>
-
-        {/* <Typography variant="subtitle1" sx={{ fontWeight: "600" }}>
-          Results:{" "}
-          {query === '' ? newsData?.length : newData.length}
-        </Typography> */}
 
         <Grid container spacing={3} my={1}>
           {newsData?.length > 0 ?
