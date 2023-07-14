@@ -8,13 +8,28 @@ export default function (state = initialState, action) {
 
   switch (type) {
     case SET_WORLD_NEWS:
-      return { worldNews: payload };
+      return {
+        worldNews: payload,
+        auth: {
+          isLoggedIn: true,
+        }
+      };
 
     case SET_SCIENCE_NEWS:
-      return { scienceNews: payload };
+      return {
+        scienceNews: payload,
+        auth: {
+          isLoggedIn: true,
+        }
+      };
 
     case SET_NEWS_DETAIL:
-      return { article: payload };
+      return {
+        article: payload,
+        auth: {
+          isLoggedIn: true,
+        }
+      };
 
     default:
       return state;

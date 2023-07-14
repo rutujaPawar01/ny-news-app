@@ -46,6 +46,8 @@ export default function Login() {
       .then(() => {
         navigate("/news");
         window.location.reload();
+      }).catch((e) => {
+        console.log(e);
       })
   };
 
@@ -71,6 +73,9 @@ export default function Login() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
+          {message?.length > 0 && <Typography component="p" sx={{ color: 'red' }}>
+            {message}
+          </Typography>}
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
@@ -102,13 +107,6 @@ export default function Login() {
             >
               Sign In
             </Button>
-            <Grid container>
-              <Grid item>
-                <Link href="/register" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
       </Container>

@@ -21,7 +21,7 @@ const SECRET_KEY = process.env.SECRET_KEY;
 const API_TOKEN = process.env.API_TOKEN;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
-const expiresIn = '15m'
+const expiresIn = '10m'
 
 // Create a token from a payload 
 function createToken(payload) {
@@ -127,9 +127,9 @@ server.post('/auth/refresh', (req, res) => {
                     const accessToken = jwt.sign({
                         email
                     }, SECRET_KEY, {
-                        expiresIn: '15m'
+                        expiresIn: '10'
                     });
-                    
+
                     return res.json({ accessToken });
                 }
             })

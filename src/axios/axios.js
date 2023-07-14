@@ -12,7 +12,7 @@ axiosInstance.interceptors.response.use(
     },
     async function (error) {
         const originalRequest = error.config;
-        if (error.response.status === 401 && !originalRequest._retry) {
+        if (error.response.status === 401 && !originalRequest._retry && !originalRequest?.url?.includes('/auth/login')) {
             originalRequest._retry = true;
 
             const resp = await refreshToken();

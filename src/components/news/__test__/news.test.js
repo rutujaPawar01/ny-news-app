@@ -36,15 +36,12 @@ describe("News Component", function () {
     it("should show 2 tabs", async () => {
         loadComponent();
 
-        console.log(screen.debug());
         expect(await screen.findByText('World')).toBeVisible()
         expect(await screen.findByText('Science')).toBeVisible()
     });
 
     it("should display World news record", async () => {
         loadComponent();
-
-        console.log(screen.debug());
 
         const data = mockData.worldNews.results[1];
         expect(await screen.findByText(data.published_date)).toBeVisible()

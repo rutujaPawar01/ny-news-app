@@ -48,11 +48,24 @@ export const register = (username, email, password) => (dispatch) => {
 export const login = (username, password) => (dispatch) => {
   return AuthService.login(username, password).then(
     (data) => {
-      dispatch({
-        type: LOGIN_SUCCESS,
-      });
+      if (data) {
+        dispatch({
+          type: LOGIN_SUCCESS,
+        });
 
-      return Promise.resolve();
+        return Promise.resolve();
+      } else {
+        dispatch({
+          type: LOGIN_FAIL,
+        });
+        
+        dispatch({
+          type: SET_MESSAGE,
+          payload: "Login Fail: Email and Password combination does not match",
+        });
+        
+        return Promise.reject();
+      }
     },
     (error) => {
       const message =

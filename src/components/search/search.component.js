@@ -16,6 +16,7 @@ import { searchNews } from "../../redux/action/search.action";
 import { Article } from '../article/article.component';
 import debounce from "lodash.debounce";
 import { getHistorySearched, handleHistorySearch } from "../../utils/util";
+import { loaderArray } from "../../constant/constant";
 
 const BASE_URL = "https://static01.nyt.com/";
 
@@ -29,7 +30,6 @@ const SearchNews = () => {
 
   useEffect(() => {
     setNewsList(searchedNews);
-    console.log("searchedNews", searchedNews);
   }, [searchedNews]);
 
   function handleSearchNews(event) {
@@ -96,14 +96,14 @@ const SearchNews = () => {
             newsData?.map((news, key) => {
               const { multimedia, pub_date, title, abstract, web_url } = news;
               return <Article
-                imageUrl={`${BASE_URL}${multimedia?.[2]?.url}`}
+                imageUrl={`${multimedia?.[2]?.url ? BASE_URL + multimedia?.[2]?.url: '/assets/New-York-Times-Logo.png'}`}
                 publishedAt={pub_date}
                 title={title}
                 summary={abstract}
                 url={web_url}
                 index={key} />
             }) :
-            query?.length ? [1, 2, 3, 4, 5, 6].map((news, key) => {
+            query?.length ? loaderArray.map((news, key) => {
               return <Grid item xs={12} sm={6} md={4}><Skeleton variant="rectangular" height={300} /></Grid>
             })
               : <Grid sx={{ textAlign: "center" }} item xs={12}>Please try different keywords...!</Grid>

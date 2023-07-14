@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useLocation } from 'react-router-dom';
-import {  Box, Typography, Link } from "@mui/material";
+import { Box, Typography, Link } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { getNewsDetail } from "../../redux/action/news.action";
 import { useEffect } from 'react';
@@ -27,7 +27,7 @@ const ArticleDetail = () => {
             maxHeight: { xs: 200, sm: 300, md: 400 }
           }}
           alt={articleData?.headline?.main}
-          src={BASE_URL + articleData?.multimedia?.[0]?.url}
+          src={articleData?.multimedia?.[0]?.url ? BASE_URL + articleData?.multimedia?.[0]?.url : '/assets/New-York-Times-Logo.png'}
         />
         <Box
           sx={{
@@ -40,23 +40,29 @@ const ArticleDetail = () => {
             borderRadius: "10px",
           }}
         >
-          <Typography
-            variant="h4"
-            sx={{ textAlign: "center", mb: "3rem", fontSize: { xs: "1.5rem" } }}
-          >
-            {articleData?.headline?.main}{" "}
-          </Typography>
-          <Typography variant="body1">{articleData?.lead_paragraph}{" "}</Typography>
+          <Box
+            sx={{
+              margin: '1.5rem'
+            }}>
+            <Typography
+              variant="h4"
+              textAlign="center"
+            >
+              {articleData?.headline?.main}{" "}
+            </Typography>
+          </Box>
+          <Typography variant="body1" sx={{ marginTop: '2rem' }}>{articleData?.lead_paragraph}{" "}</Typography>
           <Typography variant="body1">{articleData?.snippet}</Typography>
-          <Typography
-            variant="subtitle1"
-            sx={{ marginTop: "2rem", fontWeight: "600" }}
-          >
-            Learn more:{" "}
-            <Link href={articleData?.web_url} underline="hover" color="inherit">
-              {articleData?.web_url}
-            </Link>
-          </Typography>
+          <Box sx={{ marginTop: "1.5rem", fontWeight: "600" }}>
+            <Typography
+              variant="subtitle1"
+            >
+              Learn more:{" "}
+              <a href={articleData?.web_url} target="_blank" underline="hover" color="inherit">
+                {articleData?.web_url}
+              </a>
+            </Typography>
+          </Box>
         </Box>
       </>
       }

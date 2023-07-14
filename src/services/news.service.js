@@ -24,7 +24,6 @@ const getScienceNews = () => {
 const getNewsDetail = (idString) => {
     return axiosInstance.get(`${API_URL}/article/search?fq=web_url:("${idString}")`)
         .then((response) => {
-            console.log("detail data", response.data?.response?.docs?.[0]);
             return response.data?.response?.docs?.[0];
         })
         .catch((e) => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Routes, Route, Link as RouterLink, useLocation } from "react-router-dom";
+import { Routes, Route, Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import Link from "@material-ui/core/Link";
 
 import "./App.css";
@@ -17,6 +17,7 @@ import { getTokenFromLocalStorage, setHistorySearched } from "./utils/util";
 
 const App = () => {
   const { isLoggedIn } = useSelector(state => state.auth);
+  const navigation = useNavigate();
 
   const dispatch = useDispatch();
 
@@ -36,6 +37,10 @@ const App = () => {
       dispatch(logout());
     }
   }, []);
+
+  useEffect(() => {
+    !isLoggedIn && navigation('/login');
+  }, [isLoggedIn]);
 
   const logOut = useCallback(() => {
     dispatch(logout());
@@ -74,10 +79,10 @@ const App = () => {
 
       <div className="container mt-3">
         <Routes>
-          <Route path="/" element={<News />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
+          <Route exact path="/" element={<News />} />
           <Route path="/news" element={<News />} />
           <Route path="/article" element={<ArticleDetail />} />
           <Route path="/search" element={<SearchNews />} />

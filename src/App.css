@@ -31,12 +31,15 @@
 .menu {
   display: flex;
   justify-content: center;
-  margin: 20px auto;
+  padding: 10px;
+  background-color: #303030;
 }
 
-.nav-link {
+.nav-link.MuiTypography-colorPrimary {
   margin: 10px 0;
   padding: 0 10px;
+  color: white;
+  font-weight: 700;
 }
 
 @keyframes App-logo-spin {

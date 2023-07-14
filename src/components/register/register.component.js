@@ -12,6 +12,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useDispatch, useSelector } from "react-redux";
 import { register } from "../../redux/action/auth.action";
+import { Alert } from "@mui/material";
 
 const defaultTheme = createTheme();
 
@@ -66,16 +67,11 @@ export default function Register() {
           }}
         >
           {message ? (
-            <div className="form-group">
-              <div className={successful ? "alert alert-success" : "alert alert-danger"} role="alert">
-                {message}
-                <div>
-                  <a href="/login" className="nav-link">
-                    Login
-                  </a>
-                </div>
-              </div>
-            </div>
+            <Alert severity={successful ? "success" : "error"}>{message}
+              <a href="/login" className="nav-link">
+                Login
+              </a>
+            </Alert>
           ) :
             <>
               <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
@@ -132,7 +128,7 @@ export default function Register() {
                 </Button>
                 <Grid container justifyContent="flex-end">
                   <Grid item>
-                    <Link href="#" variant="body2">
+                    <Link href="/login" variant="body2">
                       Already have an account? Sign in
                     </Link>
                   </Grid>

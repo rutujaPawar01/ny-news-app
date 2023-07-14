@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { useEffect, useState } from "react";
 import {
   Container,
@@ -10,10 +10,12 @@ import Grid from "@mui/material/Grid";
 import { useDispatch, useSelector } from "react-redux";
 import { getScienceNews, getWorldNews } from "../../redux/action/news.action";
 import { Article } from '../article/article.component';
+import { loaderArray } from '../../constant/constant';
 
 const News = () => {
   const [selectedTab, setTab] = useState(0);
   const [newsData, setNewsList] = useState([]);
+  const [isLoading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
   const { worldNews, scienceNews } = useSelector(state => state.news);
@@ -25,6 +27,7 @@ const News = () => {
       dispatch(getScienceNews());
     }
     setNewsList([]);
+    setLoading(true);
   }, [selectedTab]);
 
   useEffect(() => {
@@ -33,6 +36,7 @@ const News = () => {
     } else {
       setNewsList(scienceNews);
     }
+    setLoading(false);
   }, [worldNews, scienceNews]);
 
   const handleChange = (event, newValue) => {
@@ -47,19 +51,21 @@ const News = () => {
           <Tab label="Science" name="Science" />
         </Tabs>
         <Grid container spacing={3} my={1}>
-          {newsData?.results?.length > 0 ?
+          {isLoading && loaderArray.map(() => {
+            return <Grid item xs={12} sm={6} md={4}><Skeleton variant="rectangular" height={300} /></Grid>
+          })}
+          {newsData?.results?.length > 0 &&
             newsData?.results?.map((news, key) => {
               const { multimedia, published_date, title, abstract, url } = news;
-              return url?.length > 0 && <Article
-                imageUrl={multimedia?.[2]?.url || ''}
-                publishedAt={published_date}
-                title={title}
-                summary={abstract}
-                url={url}
-                key={url} />
-            }) :
-            [1, 2, 3, 4, 5, 6].map(() => {
-              return <Grid item xs={12} sm={6} md={4}><Skeleton variant="rectangular" height={300} /></Grid>
+              return url?.length > 0 && <Fragment key={url}>
+                <Article
+                  imageUrl={multimedia?.[2]?.url || '/assets/New-York-Times-Logo.png'}
+                  publishedAt={published_date}
+                  title={title}
+                  summary={abstract}
+                  url={url}
+                  key={url} />
+              </Fragment>
             })
           }
         </Grid>
